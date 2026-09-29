@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: mathengineer
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    autoDeploy: true
+    healthCheckPath: /api/ai-status
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: DENO_TLS_CA_STORE
+        value: system

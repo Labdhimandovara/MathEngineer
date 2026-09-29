@@ -17,104 +17,91 @@ await runMigrations().catch((err) => {
   console.warn('Startup migration notice:', err?.message || err);
 });
 
+const corsHeaders: Record<string, string> = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
 Deno.serve({ port: PORT }, async (req: Request) => {
   const url = new URL(req.url);
+
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders });
+  }
 
   // 1. Check Persistence API routes (problems, attempts, assessments, sync, preferences, image binaries)
   const persistenceResponse = await handlePersistenceRequest(req, url);
   if (persistenceResponse) {
+    // Add CORS headers to persistence response
+    for (const [key, value] of Object.entries(corsHeaders)) {
+      persistenceResponse.headers.set(key, value);
+    }
     return persistenceResponse;
   }
+
+  // 1. Handle AI Status Diagnostic API
+  const apiResponse = (data: unknown, status = 200) => {
+    return new Response(JSON.stringify(data), {
+      status,
+      headers: {
+        'Content-Type': 'application/json',
+        ...corsHeaders,
+      },
+    });
+  };
 
   // 1. Handle AI Status Diagnostic API
   if (url.pathname === '/api/ai-status' || url.pathname === '/api/ai-status/') {
     try {
       const status = await checkGeminiHealth();
-      return new Response(JSON.stringify(status), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return apiResponse(status, 200);
     } catch (err: any) {
-      return new Response(
-        JSON.stringify({ provider: 'gemini', error: err?.message || 'Error checking AI status' }),
-        {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
+      return apiResponse({ provider: 'gemini', error: err?.message || 'Error checking AI status' }, 500);
     }
   }
 
   // 2. Handle Assistant API
   if (url.pathname === '/api/chat' || url.pathname === '/api/chat/') {
     if (req.method !== 'POST') {
-      return new Response(JSON.stringify({ success: false, error: 'Method not allowed. Use POST.' }), {
-        status: 405,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return apiResponse({ success: false, error: 'Method not allowed. Use POST.' }, 405);
     }
 
     try {
       const payload = await req.json();
       const result = await handleChatRequest(payload);
-      return new Response(JSON.stringify(result), {
-        status: result.success ? 200 : (result.httpStatus || 500),
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return apiResponse(result, result.success ? 200 : (result.httpStatus || 500));
     } catch (err: any) {
-      return new Response(
-        JSON.stringify({ success: false, error: err?.message || 'Server error processing chat request.' }),
-        {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
+      return apiResponse({ success: false, error: err?.message || 'Server error processing chat request.' }, 500);
     }
   }
 
   // 3. Handle Problem Image Extraction API
   if (url.pathname === '/api/problem-image' || url.pathname === '/api/problem-image/') {
     if (req.method !== 'POST') {
-      return new Response(JSON.stringify({ success: false, error: 'Method not allowed. Use POST.' }), {
-        status: 405,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return apiResponse({ success: false, error: 'Method not allowed. Use POST.' }, 405);
     }
 
     try {
       const payload = await req.json();
       const result = await handleProblemImageRequest(payload);
-      return new Response(JSON.stringify(result), {
-        status: result.success ? 200 : (result.httpStatus || 500),
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return apiResponse(result, result.success ? 200 : (result.httpStatus || 500));
     } catch (err: any) {
-      return new Response(
-        JSON.stringify({ success: false, error: err?.message || 'Server error processing problem image.' }),
-        {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
+      return apiResponse({ success: false, error: err?.message || 'Server error processing problem image.' }, 500);
     }
   }
 
   // 4. Handle Knowledge Status Diagnostic API
   if (url.pathname === '/api/knowledge-status' || url.pathname === '/api/knowledge-status/') {
     const status = getKnowledgeStatus();
-    return new Response(JSON.stringify(status), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return apiResponse(status, 200);
   }
 
   // 5. Handle Knowledge Search Diagnostic API
   if (url.pathname === '/api/knowledge-search' || url.pathname === '/api/knowledge-search/') {
     if (req.method !== 'POST') {
-      return new Response(JSON.stringify({ success: false, error: 'Method not allowed. Use POST.' }), {
-        status: 405,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return apiResponse({ success: false, error: 'Method not allowed. Use POST.' }, 405);
     }
 
     try {
@@ -125,18 +112,9 @@ Deno.serve({ port: PORT }, async (req: Request) => {
         topic: payload.topic,
         topK: payload.topK,
       });
-      return new Response(JSON.stringify({ success: true, count: results.length, results }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return apiResponse({ success: true, count: results.length, results }, 200);
     } catch (err: any) {
-      return new Response(
-        JSON.stringify({ success: false, error: err?.message || 'Knowledge search error' }),
-        {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
+      return apiResponse({ success: false, error: err?.message || 'Knowledge search error' }, 500);
     }
   }
 
