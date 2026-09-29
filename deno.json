@@ -1,0 +1,16 @@
+{
+  "tasks": {
+    "dev": "deno run -A --env-file=.env --node-modules-dir npm:vite",
+    "dev:insecure-cert": "deno run -A --unsafely-ignore-certificate-errors --node-modules-dir npm:vite",
+    "build": "deno run -A --env-file=.env --node-modules-dir npm:vite build",
+    "preview": "deno run -A --env-file=.env --node-modules-dir npm:vite preview",
+    "start": "deno run -A --env-file=.env server.ts",
+    "test": "deno test -A --unstable-sloppy-imports"
+  },
+  "unstable": ["sloppy-imports", "kv"],
+  "nodeModulesDir": "auto",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  }
+}

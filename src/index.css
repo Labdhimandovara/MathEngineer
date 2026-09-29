@@ -1,0 +1,196 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Light Theme Tokens */
+  --color-bg-primary: #F8F5F9;
+  --color-bg-surface: #FFFFFF;
+  --color-bg-near-white: #FCFAFD;
+  --color-bg-neutral: #F1EBF5;
+  --color-bg-cream: #F5F0E6;
+  --color-lavender-soft: #C6B5D8;
+  --color-lavender-dusty: #A693C2;
+  --color-lavender-deep: #806B99;
+  --color-lavender-dark: #5D4A70;
+  --color-lavender-light: #E6DDF0;
+  --color-text-charcoal: #27242A;
+  --color-text-muted: #6F6874;
+  --color-border-soft: #E5DFE8;
+  --color-border-subtle: #ECE7EF;
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  
+  --shadow-subtle: 0 1px 3px 0 rgba(39, 36, 42, 0.04), 0 1px 2px -1px rgba(39, 36, 42, 0.03);
+  --shadow-card: 0 4px 14px -2px rgba(39, 36, 42, 0.05), 0 2px 6px -1px rgba(39, 36, 42, 0.02);
+  --shadow-elevated: 0 12px 28px -4px rgba(39, 36, 42, 0.08);
+  
+  --motion-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark {
+  /* Dark Theme Tokens - Deep purple, calm academic tech aesthetic */
+  --color-bg-primary: #17131D;
+  --color-bg-surface: #211A29;
+  --color-bg-near-white: #2D2337;
+  --color-bg-neutral: #251E2E;
+  --color-bg-cream: #282033;
+  --color-lavender-soft: #C6B5D8;
+  --color-lavender-dusty: #A693C2;
+  --color-lavender-deep: #806B99;
+  --color-lavender-dark: #A693C2;
+  --color-lavender-light: #2D2337;
+  --color-text-charcoal: #F7F3FA;
+  --color-text-muted: #A9A1B2;
+  --color-border-soft: #2D2337;
+  --color-border-subtle: #382B45;
+  
+  --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 4px 14px -2px rgba(0, 0, 0, 0.5);
+  --shadow-elevated: 0 12px 28px -4px rgba(0, 0, 0, 0.6);
+}
+
+/* Global dark theme utility mappings for pristine contrast */
+.dark .text-charcoal {
+  color: #F7F3FA;
+}
+
+.dark .text-charcoal-muted {
+  color: #B5ADBF;
+}
+
+.dark .text-charcoal-subtle {
+  color: #9A92A0;
+}
+
+.dark .text-lavender-deep {
+  color: #C5B8EB;
+}
+
+.dark .bg-bg-surface,
+.dark [class*="bg-bg-surface"] {
+  background-color: #211A29;
+}
+
+.dark .bg-bg-primary,
+.dark [class*="bg-bg-primary"] {
+  background-color: #17131D;
+}
+
+.dark .bg-bg-neutral,
+.dark [class*="bg-bg-neutral"] {
+  background-color: #251E2E;
+}
+
+.dark .bg-bg-cream,
+.dark [class*="bg-bg-cream"] {
+  background-color: #282033;
+}
+
+.dark .bg-lavender-light,
+.dark [class*="bg-lavender-light"] {
+  background-color: #34244E;
+}
+
+.dark .border-border-soft {
+  border-color: #382B45;
+}
+
+.dark [class*="border-border-soft"] {
+  border-color: #382B45;
+}
+
+.dark [class*="divide-border-soft"] > :not([hidden]) ~ :not([hidden]) {
+  border-color: #382B45;
+}
+
+body {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-charcoal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle mathematical coordinate grid background pattern */
+.bg-math-grid {
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(128, 107, 153, 0.12) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.dark .bg-math-grid {
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(166, 147, 194, 0.15) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Subtle editorial scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #E5DFE8;
+  border-radius: 3px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #2D2337;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C6B5D8;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #40334D;
+}
+
+/* Restrained transitions */
+.transition-calm {
+  transition: all var(--motion-normal);
+}
+
+.transition-fast {
+  transition: all var(--motion-fast);
+}
+
+/* Subtle focus ring */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-lavender-dusty/50 focus:ring-offset-1 focus:ring-offset-bg-primary;
+}
+
+/* Button & Interactive micro-press */
+.btn-press {
+  @apply transition-transform active:scale-[0.98];
+}
+
+/* Challenge Mode ambient elevation without breaking calm aesthetic */
+.challenge-theme {
+  --color-bg-primary: #F7F3F6;
+  --color-lavender-deep: #6E538A;
+}
+
+.dark.challenge-theme {
+  --color-bg-primary: #191421;
+  --color-lavender-deep: #967CB5;
+}
+
+/* Accessibility: strictly respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+

@@ -1,0 +1,436 @@
+/**
+ * Mathematically Verified Question Bank for MathEngineer
+ * 
+ * Contains 20 problems across Bisection, False Position, Newton-Raphson,
+ * and Comparative/Mixed methods. Every single problem has been verified
+ * against the deterministic numerical engines for opposite-sign bracketing,
+ * non-zero derivative, and precise convergence.
+ */
+
+export type QuestionMethod = 'bisection' | 'false-position' | 'newton-raphson' | 'mixed';
+export type QuestionDifficulty = 'Beginner' | 'Intermediate' | 'Advanced';
+export type QuestionCategory = 'Fundamental' | 'Exam-style' | 'Transcendental';
+
+export interface PracticeQuestion {
+  id: string;
+  title: string;
+  method: QuestionMethod;
+  difficulty: QuestionDifficulty;
+  categoryLabel: QuestionCategory;
+  equation: string;
+  equationDisplay: string;
+  bounds: [number, number];
+  x0?: number;
+  decimalPlaces: number;
+  estimatedMinutes: number;
+  description: string;
+  conceptNotes: string[];
+  expectedRoot: number;
+  expectedIterations: number;
+}
+
+export const PRACTICE_QUESTIONS: PracticeQuestion[] = [
+  // ---------------------------------------------------------------------------
+  // BISECTION METHOD (5 QUESTIONS)
+  // ---------------------------------------------------------------------------
+  {
+    id: 'pq-bis-1',
+    title: 'Cubic Polynomial: Fundamental Root',
+    method: 'bisection',
+    difficulty: 'Beginner',
+    categoryLabel: 'Fundamental',
+    equation: 'x^3 - x - 1',
+    equationDisplay: 'x³ - x - 1 = 0',
+    bounds: [1, 2],
+    decimalPlaces: 3,
+    estimatedMinutes: 10,
+    description: 'Find a real root of x³ - x - 1 = 0 on [1, 2] correct to 3 decimal places using the Bisection method.',
+    conceptNotes: [
+      'f(1) = -1 < 0, f(2) = 5 > 0, so a root is guaranteed in (1, 2).',
+      'Each iteration halves the uncertainty interval.',
+      'Check endpoints and midpoint equality to 3 decimal places.',
+    ],
+    expectedRoot: 1.325,
+    expectedIterations: 12,
+  },
+  {
+    id: 'pq-bis-2',
+    title: 'Cubic with Negative Linear Term',
+    method: 'bisection',
+    difficulty: 'Intermediate',
+    categoryLabel: 'Fundamental',
+    equation: 'x^3 - 4*x - 9',
+    equationDisplay: 'x³ - 4x - 9 = 0',
+    bounds: [2, 3],
+    decimalPlaces: 3,
+    estimatedMinutes: 12,
+    description: 'Approximate the real root of x³ - 4x - 9 = 0 in [2, 3] correct to 3 decimal places.',
+    conceptNotes: [
+      'f(2) = -9 < 0, f(3) = 6 > 0.',
+      'Midpoints steadily contract towards ~2.706.',
+    ],
+    expectedRoot: 2.706,
+    expectedIterations: 12,
+  },
+  {
+    id: 'pq-bis-3',
+    title: 'Transcendental Exponential Balance',
+    method: 'bisection',
+    difficulty: 'Advanced',
+    categoryLabel: 'Transcendental',
+    equation: 'cos(x) - x*exp(x)',
+    equationDisplay: 'cos(x) - x·eˣ = 0',
+    bounds: [0, 1],
+    decimalPlaces: 3,
+    estimatedMinutes: 15,
+    description: 'Solve cos(x) - x·eˣ = 0 on [0, 1] using Bisection to 3 decimal places.',
+    conceptNotes: [
+      'f(0) = 1 > 0, f(1) = cos(1) - e ≈ -2.1779 < 0.',
+      'Remember angles are evaluated in radians.',
+    ],
+    expectedRoot: 0.518,
+    expectedIterations: 12,
+  },
+  {
+    id: 'pq-bis-4',
+    title: 'Intermediate Value Benchmark',
+    method: 'bisection',
+    difficulty: 'Intermediate',
+    categoryLabel: 'Exam-style',
+    equation: 'x^3 - 2*x - 5',
+    equationDisplay: 'x³ - 2x - 5 = 0',
+    bounds: [2, 3],
+    decimalPlaces: 3,
+    estimatedMinutes: 12,
+    description: 'Apply the Bisection method to x³ - 2x - 5 = 0 on [2, 3] to determine the root to 3 decimal places.',
+    conceptNotes: [
+      'f(2) = -1 < 0, f(3) = 16 > 0.',
+      'Common undergraduate exam benchmark equation.',
+    ],
+    expectedRoot: 2.094,
+    expectedIterations: 12,
+  },
+  {
+    id: 'pq-bis-5',
+    title: 'Approximation of √3',
+    method: 'bisection',
+    difficulty: 'Beginner',
+    categoryLabel: 'Fundamental',
+    equation: 'x^2 - 3',
+    equationDisplay: 'x² - 3 = 0',
+    bounds: [1, 2],
+    decimalPlaces: 3,
+    estimatedMinutes: 8,
+    description: 'Approximate the value of √3 by solving x² - 3 = 0 on [1, 2] using Bisection.',
+    conceptNotes: [
+      'f(1) = -2, f(2) = 1.',
+      'Known exact target: √3 ≈ 1.73205.',
+    ],
+    expectedRoot: 1.732,
+    expectedIterations: 12,
+  },
+
+  // ---------------------------------------------------------------------------
+  // FALSE POSITION METHOD (REGULA FALSI) (5 QUESTIONS)
+  // ---------------------------------------------------------------------------
+  {
+    id: 'pq-fp-1',
+    title: 'Course Example 1: Cubic Root by Regula Falsi',
+    method: 'false-position',
+    difficulty: 'Beginner',
+    categoryLabel: 'Exam-style',
+    equation: 'x^3 - 2*x - 5',
+    equationDisplay: 'x³ - 2x - 5 = 0',
+    bounds: [2, 3],
+    decimalPlaces: 3,
+    estimatedMinutes: 12,
+    description: 'Official Course PPT Example 1: Calculate the real root of x³ - 2x - 5 = 0 on [2, 3] using Regula Falsi.',
+    conceptNotes: [
+      'Chord formula: x = [a·f(b) - b·f(a)] / [f(b) - f(a)].',
+      'Sign check determines whether a or b is replaced.',
+      'Converges faster than bisection (6 iterations vs 12).',
+    ],
+    expectedRoot: 2.094,
+    expectedIterations: 6,
+  },
+  {
+    id: 'pq-fp-2',
+    title: 'Course Example 2: Transcendental Equation',
+    method: 'false-position',
+    difficulty: 'Intermediate',
+    categoryLabel: 'Transcendental',
+    equation: 'cos(x) - x*exp(x)',
+    equationDisplay: 'cos(x) - x·eˣ = 0',
+    bounds: [0, 1],
+    decimalPlaces: 4,
+    estimatedMinutes: 18,
+    description: 'Official Course PPT Example 2: Solve cos(x) - x·eˣ = 0 on [0, 1] correct to 4 decimal places.',
+    conceptNotes: [
+      'Course sequence: 0.3147 → 0.4467 → 0.4940 → 0.5099 → ... → 0.5177.',
+      'Successive approximations agree to 4 decimal places at termination.',
+    ],
+    expectedRoot: 0.5177,
+    expectedIterations: 9,
+  },
+  {
+    id: 'pq-fp-3',
+    title: 'Rapid Chord Interpolation on Cubic',
+    method: 'false-position',
+    difficulty: 'Beginner',
+    categoryLabel: 'Fundamental',
+    equation: 'x^3 - x - 1',
+    equationDisplay: 'x³ - x - 1 = 0',
+    bounds: [1, 2],
+    decimalPlaces: 3,
+    estimatedMinutes: 10,
+    description: 'Find the root of x³ - x - 1 = 0 on [1, 2] correct to 3 decimal places using False Position.',
+    conceptNotes: [
+      'f(1) = -1, f(2) = 5.',
+      'First approximation x₁ = (1·5 - 2·(-1))/(5 - (-1)) = 7/6 ≈ 1.1667.',
+    ],
+    expectedRoot: 1.324,
+    expectedIterations: 8,
+  },
+  {
+    id: 'pq-fp-4',
+    title: 'Cubic with Rapid Left-Bound Replacement',
+    method: 'false-position',
+    difficulty: 'Intermediate',
+    categoryLabel: 'Exam-style',
+    equation: 'x^3 - 5*x + 3',
+    equationDisplay: 'x³ - 5x + 3 = 0',
+    bounds: [0, 1],
+    decimalPlaces: 3,
+    estimatedMinutes: 12,
+    description: 'Find a root of x³ - 5x + 3 = 0 on [0, 1] correct to 3 decimal places by False Position.',
+    conceptNotes: [
+      'f(0) = 3 > 0, f(1) = -1 < 0.',
+      'Notice opposite sign holds; root is at x ≈ 0.657.',
+    ],
+    expectedRoot: 0.657,
+    expectedIterations: 5,
+  },
+  {
+    id: 'pq-fp-5',
+    title: 'Exponential Product Equation',
+    method: 'false-position',
+    difficulty: 'Advanced',
+    categoryLabel: 'Transcendental',
+    equation: 'x*exp(x) - 1',
+    equationDisplay: 'x·eˣ - 1 = 0',
+    bounds: [0, 1],
+    decimalPlaces: 3,
+    estimatedMinutes: 15,
+    description: 'Find the root of x·eˣ - 1 = 0 in [0, 1] correct to 3 decimal places using False Position.',
+    conceptNotes: [
+      'f(0) = -1, f(1) = e - 1 ≈ 1.7183 > 0.',
+      'Known as the Omega constant value equation.',
+    ],
+    expectedRoot: 0.567,
+    expectedIterations: 7,
+  },
+
+  // ---------------------------------------------------------------------------
+  // NEWTON-RAPHSON METHOD (5 QUESTIONS)
+  // ---------------------------------------------------------------------------
+  {
+    id: 'pq-nr-1',
+    title: 'Course Primary Example: Quartic Polynomial',
+    method: 'newton-raphson',
+    difficulty: 'Beginner',
+    categoryLabel: 'Exam-style',
+    equation: 'x^4 - x - 10',
+    equationDisplay: 'x⁴ - x - 10 = 0',
+    bounds: [1, 2],
+    x0: 2,
+    decimalPlaces: 3,
+    estimatedMinutes: 10,
+    description: 'Official Course PPT Primary Example: Find root of x⁴ - x - 10 = 0 on [1, 2] with x₀ = 2 to 3 decimal places.',
+    conceptNotes: [
+      'f(1) = -10, f(2) = 4. Since |f(2)| = 4 < |-10|, x₀ = 2.',
+      'Derivative f\'(x) = 4x³ - 1.',
+      'Course sequence: x₁ = 1.871, x₂ = 1.856, x₃ = 1.856 (stops!).',
+    ],
+    expectedRoot: 1.856,
+    expectedIterations: 3,
+  },
+  {
+    id: 'pq-nr-2',
+    title: 'Course Exercise 1: Trigonometric Equation',
+    method: 'newton-raphson',
+    difficulty: 'Intermediate',
+    categoryLabel: 'Transcendental',
+    equation: '3*x - cos(x) - 1',
+    equationDisplay: '3x - cos(x) - 1 = 0',
+    bounds: [0, 1],
+    x0: 0.6,
+    decimalPlaces: 4,
+    estimatedMinutes: 12,
+    description: 'Official Course PPT Exercise 1: Solve 3x - cos(x) - 1 = 0 on [0, 1] to 4 decimal places with x₀ = 0.6.',
+    conceptNotes: [
+      'f\'(x) = 3 + sin(x).',
+      'Rapid convergence: arrives at 0.6071 in just 2 iterations.',
+    ],
+    expectedRoot: 0.6071,
+    expectedIterations: 2,
+  },
+  {
+    id: 'pq-nr-3',
+    title: 'Course Exercise 2: Cubic Equation',
+    method: 'newton-raphson',
+    difficulty: 'Beginner',
+    categoryLabel: 'Exam-style',
+    equation: 'x^3 - 2*x - 5',
+    equationDisplay: 'x³ - 2x - 5 = 0',
+    bounds: [2, 3],
+    x0: 2,
+    decimalPlaces: 3,
+    estimatedMinutes: 10,
+    description: 'Official Course PPT Exercise 2: Find root of x³ - 2x - 5 = 0 near x₀ = 2 using Newton-Raphson.',
+    conceptNotes: [
+      'f(2) = -1, f(3) = 16. Closer endpoint is x₀ = 2.',
+      'f\'(x) = 3x² - 2. At x₀ = 2, f\'(2) = 10.',
+    ],
+    expectedRoot: 2.095,
+    expectedIterations: 3,
+  },
+  {
+    id: 'pq-nr-4',
+    title: 'Rapid Tangent Convergence on Cubic',
+    method: 'newton-raphson',
+    difficulty: 'Intermediate',
+    categoryLabel: 'Fundamental',
+    equation: 'x^3 - 4*x - 9',
+    equationDisplay: 'x³ - 4x - 9 = 0',
+    bounds: [2, 3],
+    x0: 3,
+    decimalPlaces: 3,
+    estimatedMinutes: 10,
+    description: 'Solve x³ - 4x - 9 = 0 with initial guess x₀ = 3 to 3 decimal places using Newton-Raphson.',
+    conceptNotes: [
+      'f(2) = -9, f(3) = 6. Closer to zero is x₀ = 3.',
+      'f\'(x) = 3x² - 4. At x₀ = 3, f\'(3) = 23.',
+    ],
+    expectedRoot: 2.707,
+    expectedIterations: 3,
+  },
+  {
+    id: 'pq-nr-5',
+    title: 'High-Precision Square Root: √5',
+    method: 'newton-raphson',
+    difficulty: 'Beginner',
+    categoryLabel: 'Fundamental',
+    equation: 'x^2 - 5',
+    equationDisplay: 'x² - 5 = 0',
+    bounds: [2, 3],
+    x0: 2,
+    decimalPlaces: 4,
+    estimatedMinutes: 8,
+    description: 'Compute √5 to 4 decimal places by solving x² - 5 = 0 starting from x₀ = 2.',
+    conceptNotes: [
+      'Formula reduces to Heron\'s method: x_(n+1) = (x_n + 5/x_n) / 2.',
+      'Quadratic convergence doubles correct digits each step.',
+    ],
+    expectedRoot: 2.2361,
+    expectedIterations: 3,
+  },
+
+  // ---------------------------------------------------------------------------
+  // MIXED & COMPARATIVE PROBLEMS (5 QUESTIONS)
+  // ---------------------------------------------------------------------------
+  {
+    id: 'pq-mix-1',
+    title: 'Method Comparison: Cubic Equation',
+    method: 'mixed',
+    difficulty: 'Advanced',
+    categoryLabel: 'Exam-style',
+    equation: 'x^3 - 9*x + 1',
+    equationDisplay: 'x³ - 9x + 1 = 0',
+    bounds: [2, 4],
+    decimalPlaces: 3,
+    estimatedMinutes: 15,
+    description: 'Find a positive root in [2, 4] and observe how Bisection, False Position, and Newton-Raphson compare in step count.',
+    conceptNotes: [
+      'f(2) = 8 - 18 + 1 = -9 < 0; f(4) = 64 - 36 + 1 = 29 > 0.',
+      'Bisection requires 13 steps, False Position takes 7 steps, Newton takes 4 steps.',
+    ],
+    expectedRoot: 2.943,
+    expectedIterations: 13,
+  },
+  {
+    id: 'pq-mix-2',
+    title: 'Trigonometric Linear Intersection',
+    method: 'mixed',
+    difficulty: 'Intermediate',
+    categoryLabel: 'Transcendental',
+    equation: '2*x - 3 - cos(x)',
+    equationDisplay: '2x - 3 - cos(x) = 0',
+    bounds: [1, 2],
+    decimalPlaces: 3,
+    estimatedMinutes: 12,
+    description: 'Solve 2x - 3 - cos(x) = 0 on [1, 2] to 3 decimal places.',
+    conceptNotes: [
+      'Continuous function with monotone increasing derivative f\'(x) = 2 + sin(x) > 0.',
+      'Guarantees unique simple root.',
+    ],
+    expectedRoot: 1.524,
+    expectedIterations: 12,
+  },
+  {
+    id: 'pq-mix-3',
+    title: 'Cubic Near Unit Interval',
+    method: 'mixed',
+    difficulty: 'Intermediate',
+    categoryLabel: 'Exam-style',
+    equation: 'x^3 - 3*x + 1',
+    equationDisplay: 'x³ - 3x + 1 = 0',
+    bounds: [1, 2],
+    decimalPlaces: 3,
+    estimatedMinutes: 12,
+    description: 'Find the root of x³ - 3x + 1 = 0 on [1, 2] to 3 decimal places.',
+    conceptNotes: [
+      'f(1) = -1 < 0, f(2) = 3 > 0.',
+      'Ideal for testing interval bracket logic and endpoint assignment.',
+    ],
+    expectedRoot: 1.532,
+    expectedIterations: 12,
+  },
+  {
+    id: 'pq-mix-4',
+    title: 'Exponential Balance: eˣ = 3x',
+    method: 'mixed',
+    difficulty: 'Advanced',
+    categoryLabel: 'Transcendental',
+    equation: 'exp(x) - 3*x',
+    equationDisplay: 'eˣ - 3x = 0',
+    bounds: [0, 1],
+    decimalPlaces: 3,
+    estimatedMinutes: 15,
+    description: 'Find the lower root of eˣ - 3x = 0 on [0, 1] to 3 decimal places.',
+    conceptNotes: [
+      'f(0) = 1 > 0, f(1) = e - 3 ≈ -0.2817 < 0.',
+      'Notice that opposite signs are reversed: f(0) > 0 and f(1) < 0.',
+    ],
+    expectedRoot: 0.619,
+    expectedIterations: 12,
+  },
+  {
+    id: 'pq-mix-5',
+    title: 'Standard University Exam Cubic',
+    method: 'mixed',
+    difficulty: 'Beginner',
+    categoryLabel: 'Fundamental',
+    equation: 'x^3 - x - 4',
+    equationDisplay: 'x³ - x - 4 = 0',
+    bounds: [1, 2],
+    decimalPlaces: 3,
+    estimatedMinutes: 10,
+    description: 'Find the root of x³ - x - 4 = 0 on [1, 2] to 3 decimal places.',
+    conceptNotes: [
+      'f(1) = -4, f(2) = 2.',
+      'Standard benchmark for comparing bracketing methods against open methods.',
+    ],
+    expectedRoot: 1.796,
+    expectedIterations: 12,
+  },
+];

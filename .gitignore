@@ -1,0 +1,30 @@
+# Dependencies
+node_modules
+.deno
+
+# Production build artifacts
+dist
+
+# Environment variables and secrets
+.env
+.env.local
+.env.*.local
+*.env
+
+# Local SQLite / Deno KV runtime databases
+data/*.db
+data/*.db-shm
+data/*.db-wal
+*.db
+*.db-journal
+
+# Temporary / Scratch files
+scratch/
+*.tmp
+*.log
+
+# Editor / System files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

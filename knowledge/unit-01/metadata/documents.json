@@ -1,0 +1,41 @@
+[
+  {
+    "id": "doc-unit1-bisection",
+    "unit": "Unit-I",
+    "topic": "Numerical solution of algebraic and transcendental equations: Bisection methods",
+    "method": "bisection",
+    "title": "Bisection Methods",
+    "sourceType": "official-course",
+    "sourceFile": "Unit-I_Bisection_Methods.pdf",
+    "author": "Dr. Ram Kishun Lodhi",
+    "department": "Department of Applied Science",
+    "institution": "Symbiosis Institute of Technology Pune",
+    "pageCount": 10
+  },
+  {
+    "id": "doc-unit1-false-position",
+    "unit": "Unit-I",
+    "topic": "Numerical solution of algebraic and transcendental equations: False position methods",
+    "method": "false-position",
+    "title": "False Position Methods or Regula-Falsi Method",
+    "sourceType": "official-course",
+    "sourceFile": "Unit-I_False_Position_Methods.pdf",
+    "author": "Dr. Ram Kishun Lodhi",
+    "department": "Department of Applied Science",
+    "institution": "Symbiosis Institute of Technology Pune",
+    "pageCount": 8
+  },
+  {
+    "id": "doc-unit1-newton-raphson",
+    "unit": "Unit-I",
+    "topic": "Numerical solution of algebraic and transcendental equations: Newton - Raphson methods",
+    "method": "newton-raphson",
+    "title": "Newton-Raphson Method",
+    "sourceType": "official-course",
+    "sourceFile": "Unit-I_Newton_Raphson_Methods.pdf",
+    "author": "Dr. Ram Kishun Lodhi",
+    "department": "Department of Applied Science",
+    "institution": "Symbiosis Institute of Technology Pune",
+    "pageCount": 8
+  }
+]
